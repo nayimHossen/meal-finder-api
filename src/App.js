@@ -1,23 +1,29 @@
-import logo from './logo.svg';
+import React, { useEffect, useState } from 'react';
 import './App.css';
 
 function App() {
+  const [search, setSearch] = useState('');
+  const [foods, setFoods] = useState([]);
+  const handleChange = (e) => {
+    setSearch(e.target.value)
+  }
+  useEffect(() => {
+    const url = `https://www.themealdb.com/api/json/v1/1/search.php?s=${search}`;
+    fetch(url)
+      .then(response => response.json())
+      .then(data => setFoods(data.meals))
+  }, [search]);
+  console.log(foods);
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <h1>Search food</h1>
+      <input type="text" onChange={handleChange} placeholder="Search food" />
+      <h2>Search Value: {search}</h2>
+      {
+        foods?.map(food => <div>
+          <img style={{ width: "200px" }} src={food.strMealThumb} />
+        </div>)
+      }
     </div>
   );
 }
